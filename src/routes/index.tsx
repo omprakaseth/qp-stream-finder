@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { z } from "zod";
 import { Search, SlidersHorizontal, Mic, X, RefreshCw, Film } from "lucide-react";
 import { SiteHeader, SiteFooter } from "@/components/qp/SiteChrome";
-import { MovieCard, MovieCardSkeleton, Poster } from "@/components/qp/MovieCard";
+import { MovieCard, MovieCardSkeleton } from "@/components/qp/MovieCard";
 import { PaginationBar } from "@/components/qp/PaginationBar";
 import { ScrollToGrid } from "@/components/qp/ScrollToGrid";
 import { Button } from "@/components/ui/button";
