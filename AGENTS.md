@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep playback authorization in the watch route and media interaction in a dedicated VideoPlayer component; presentation must never bypass server-side media access policies.
