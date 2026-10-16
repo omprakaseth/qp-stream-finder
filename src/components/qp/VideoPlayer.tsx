@@ -37,9 +37,9 @@ type Gesture = {
   active: boolean;
   moved: boolean;
 };
-export const clamp = (value: number, min: number, max: number) =>
+const clamp = (value: number, min: number, max: number) =>
   Math.max(min, Math.min(max, value));
-export const formatTime = (seconds: number) => {
+const formatTime = (seconds: number) => {
   const s = Number.isFinite(seconds) ? Math.max(0, Math.floor(seconds)) : 0;
   const h = Math.floor(s / 3600),
     m = Math.floor((s % 3600) / 60);
@@ -60,6 +60,7 @@ export function VideoPlayer({
   const video = useRef<NativeVideo>(null),
     frame = useRef<HTMLDivElement>(null);
   const gesture = useRef<Gesture | null>(null);
+  const lastTap = useRef<{ time: number; side: string } | null>(null);
   const idleTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const noticeTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
   const hudTimer = useRef<ReturnType<typeof setTimeout> | undefined>(undefined);
@@ -98,7 +99,7 @@ export function VideoPlayer({
       if (
         video.current &&
         !video.current.paused &&
-        !frame.current?.contains(document.activeElement)
+        !frame.current?.querySelector(":focus-visible")
       )
         setVisible(false);
     }, 2800);
@@ -216,6 +217,11 @@ export function VideoPlayer({
   }, [onHeartbeat, error]);
   useEffect(() => {
     const key = (e: KeyboardEvent) => {
+      if (e.key === "[" || e.key === "]") {
+        e.preventDefault();
+        const next = clamp(brightness + (e.key === "]" ? 0.1 : -0.1), 0.2, 1.8);
+        setBrightness(next); showHud("brightness", next); wake(); return;
+      }
       if (
         (e.target as HTMLElement)?.closest(
           "input, select, button, textarea, [contenteditable=true]",
@@ -327,6 +333,14 @@ export function VideoPlayer({
     if (e.currentTarget.hasPointerCapture(e.pointerId))
       e.currentTarget.releasePointerCapture(e.pointerId);
     if (!g.moved) {
+      const previous = lastTap.current;
+      const now = Date.now();
+      lastTap.current = { time: now, side: g.side };
+      if (!locked && previous?.side === g.side && now - previous.time < 300) {
+        lastTap.current = null;
+        seek(g.side === "brightness" ? -skip : skip);
+        return;
+      }
       if (locked) wake();
       else if (visible) {
         clearTimeout(idleTimer.current);
@@ -359,7 +373,7 @@ export function VideoPlayer({
         gesture.current = null;
       }}
       onMouseMove={(e) => {
-        if (e.buttons === 0 && e.movementX + Math.abs(e.movementY) !== 0) wake();
+        if (e.buttons === 0 && Math.abs(e.movementX) + Math.abs(e.movementY) !== 0) wake();
       }}
     >
       <video
