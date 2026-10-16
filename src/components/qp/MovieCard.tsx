@@ -3,17 +3,35 @@ import { useState } from "react";
 import { Film } from "lucide-react";
 import type { MovieCardData } from "@/lib/catalog.functions";
 
-export function Poster({ src, title, className = "" }: { src: string | null; title: string; className?: string }) {
+export function Poster({
+  src,
+  title,
+  className = "",
+}: {
+  src: string | null;
+  title: string;
+  className?: string;
+}) {
   const [failed, setFailed] = useState(false);
   if (!src || failed) {
     return (
-      <div className={`flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-accent to-secondary p-3 text-center ${className}`}>
+      <div
+        className={`flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-accent to-secondary p-3 text-center ${className}`}
+      >
         <Film className="h-7 w-7 text-muted-foreground" aria-hidden="true" />
         <span className="sr-only">{title} poster unavailable</span>
       </div>
     );
   }
-  return <img src={src} alt={`${title} poster`} loading="lazy" onError={() => setFailed(true)} className={`object-cover ${className}`} />;
+  return (
+    <img
+      src={src}
+      alt={`${title} poster`}
+      loading="lazy"
+      onError={() => setFailed(true)}
+      className={`object-cover ${className}`}
+    />
+  );
 }
 
 export function MovieCard({ movie }: { movie: MovieCardData }) {
