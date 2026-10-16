@@ -74,7 +74,7 @@ function Home() {
   return (
     <div className="min-h-screen">
       <SiteHeader onSearch={() => inputRef.current?.focus()} />
-      <div className="mx-auto max-w-7xl px-4">
+      <div className="mx-auto max-w-7xl px-3 sm:px-4">
         <div className="mt-4 flex gap-2">
           <div className="relative flex-1">
             <Search className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" aria-hidden="true" />
@@ -109,8 +109,8 @@ function Home() {
           </section>
         )}
 
-        <section ref={gridRef} aria-labelledby="grid-h" className="scroll-mt-20 pt-8">
-          <div className="mb-4 flex items-end justify-between">
+        <section ref={gridRef} aria-labelledby="grid-h" className="scroll-mt-20 pt-5">
+          <div className="mb-3 flex items-end justify-between">
             <h2 id="grid-h" className="text-xl font-semibold">{search.q ? `Results for “${search.q}”` : "Movies"}</h2>
             {list.data && <span className="text-sm text-muted-foreground">{list.data.total} titles</span>}
           </div>
@@ -120,7 +120,7 @@ function Home() {
               <Button variant="outline" className="mt-4" onClick={() => list.refetch()}><RefreshCw className="h-4 w-4" /> Retry</Button>
             </div>
           ) : list.isPending ? (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6">{Array.from({ length: 12 }, (_, i) => <MovieCardSkeleton key={i} />)}</div>
+            <div className="grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8">{Array.from({ length: 12 }, (_, i) => <MovieCardSkeleton key={i} />)}</div>
           ) : list.data.items.length === 0 ? (
             <div className="rounded-2xl border border-dashed border-border p-10 text-center">
               <Film className="mx-auto h-8 w-8 text-muted-foreground" />
@@ -129,7 +129,7 @@ function Home() {
               <Button variant="outline" className="mt-4" onClick={() => { setText(""); navigate({ search: {}, replace: true }); }}>Reset</Button>
             </div>
           ) : (
-            <div className={`grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 ${list.isPlaceholderData ? "opacity-60" : ""}`}>
+            <div className={`grid grid-cols-2 gap-x-2 gap-y-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 ${list.isPlaceholderData ? "opacity-60" : ""}`}>
               {list.data.items.map((m) => <MovieCard key={m.id} movie={m} />)}
             </div>
           )}
